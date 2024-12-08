@@ -21,7 +21,7 @@ public class RenderableHolder {
     private List<IRenderable> entities;
     private Comparator<IRenderable> comparator;
 
-    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3;
+    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3,pauseMenu;
 
     public static Image[] state;
 
@@ -62,6 +62,10 @@ public class RenderableHolder {
         mapButton1 = new Image(ClassLoader.getSystemResource("mapButton1.png").toString());
         mapButton2 = new Image(ClassLoader.getSystemResource("mapButton2.png").toString());
         mapButton3 = new Image(ClassLoader.getSystemResource("mapButton3.png").toString());
+    }
+    public static void loadPauseResource(){
+        pauseMenu = new Image(ClassLoader.getSystemResource("game-background.jpg").toString());
+        
     }
 
 //    public static void loadAnimation(){

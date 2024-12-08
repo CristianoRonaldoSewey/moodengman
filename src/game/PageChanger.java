@@ -14,8 +14,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logic.MainMenu;
 
 public class PageChanger {
+	
+	public static void changeToMainMenu(Stage stage) {
+		MainMenu m = new MainMenu();
+		stage.setScene(new Scene(m.createContent()));
+	}
 	
 	public static void changeToMapSelection(Stage stage) {
         // Root pane for the map selection page
@@ -33,9 +39,9 @@ public class PageChanger {
         mapButtons.setSpacing(20);
 
         // Create buttons for each map
-        Button map1Button = createMapButton("Map 1", "/map1_preview.png", stage, 0);
-        Button map2Button = createMapButton("Map 2", "/map2_preview.png", stage, 1);
-        Button map3Button = createMapButton("Map 3", "/map3_preview.png", stage, 2);
+        Button map1Button = createMapButton("Map 1", "mapButton1.jpg", stage, 0);
+        Button map2Button = createMapButton("Map 2", "mapButton2.png", stage, 1);
+        Button map3Button = createMapButton("Map 3", "mapButton3.png", stage, 2);
 
         mapButtons.getChildren().addAll(map1Button, map2Button, map3Button);
 
@@ -64,7 +70,7 @@ public class PageChanger {
         mapButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
         mapButton.setOnAction(e -> {
             System.out.println(mapName + " selected!");
-            PageChanger.changeToGame(mapIndex); // Transition to game page with the selected map index
+            changeToGame(mapIndex); // Transition to game page with the selected map index
         });
 
         return mapButton;

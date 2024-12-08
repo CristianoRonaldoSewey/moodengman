@@ -49,7 +49,7 @@ public class MapSelectionMenu {
 
         // Add an image preview
         
-        Image mapPreviewImage = new Image(PageChanger.class.getResourceAsStream(imagePath));
+        Image mapPreviewImage = new Image(ClassLoader.getSystemResource(imagePath).toString());
         ImageView mapPreview = new ImageView(mapPreviewImage);
         mapPreview.setFitWidth(200);
         mapPreview.setFitHeight(150);

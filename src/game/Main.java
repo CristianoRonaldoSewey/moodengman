@@ -32,8 +32,9 @@ public class Main extends Application {
 		mainStage = primaryStage;
 
         // Start with map selection
-        PageChanger.changeToMapSelection(primaryStage);
-
+//        PageChanger.changeToMapSelection(primaryStage);
+		PageChanger.changeToMainMenu(primaryStage);
+		
         primaryStage.show();
 	}
 	public static Stage getMainStage() {
