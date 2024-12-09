@@ -581,7 +581,7 @@ public class Model extends Canvas {
                 System.out.println("Game Restarted");
             } else if (key == KeyCode.Q) {
             	this.gameOver = true;
-//                PageChanger.changeToMapSelection(getMainStage());
+
             }
             return; // Exit after handling paused state
         }
@@ -626,12 +626,12 @@ public class Model extends Canvas {
         
 
         gc.setFill(Color.RED);
-        gc.setFont(Font.font("Arial", FontWeight.BOLD, 36));
-        gc.fillText(gameOverText, SCREEN_SIZE / 4.5, SCREEN_SIZE / 3);
+        gc.setFont(Font.font("Book Antiqua", FontWeight.BOLD, 36));
+        gc.fillText(gameOverText, SCREEN_SIZE / 5.25, SCREEN_SIZE / 3);
 
-        gc.setFont(Font.font("Arial", FontWeight.NORMAL, 24));
+        gc.setFont(Font.font("Book Antiqua", FontWeight.NORMAL, 24));
         gc.setFill(Color.WHITE);
-        gc.fillText(scoreText, SCREEN_SIZE / 3.3, SCREEN_SIZE / 2);
+        gc.fillText(scoreText, SCREEN_SIZE / 3.25, SCREEN_SIZE / 2);
         gc.fillText(restartText, SCREEN_SIZE / 16, SCREEN_SIZE / 1.5);
         
     }

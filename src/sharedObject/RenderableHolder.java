@@ -21,7 +21,7 @@ public class RenderableHolder {
     private List<IRenderable> entities;
     private Comparator<IRenderable> comparator;
 
-    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3,pauseMenu,mapselectionMenu;
+    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3,pauseMenu,mapselectionMenu,mapBackButton;
 
     public static Image[] state;
 
@@ -71,8 +71,8 @@ public class RenderableHolder {
         
     }
     public static void loadMapselectionResource(){
-    	mapselectionMenu = new Image(ClassLoader.getSystemResource("mapselectMenu.png").toString());
-        
+    	mapselectionMenu = new Image(ClassLoader.getSystemResource("mapselectedMenu.png").toString());
+        mapBackButton = new Image(ClassLoader.getSystemResource("backButton.png").toString());
     }
 
 //    public static void loadAnimation(){

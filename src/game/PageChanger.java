@@ -43,22 +43,27 @@ public class PageChanger {
 	    root.setBackground(new Background(bgImage));
 
 	    // Back Button
-	    Button backButton = new Button("Back");
-	    backButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
+	    Button backButton = new Button();
+	    Image backImage = RenderableHolder.mapBackButton; 
+	    ImageView backImageView = new ImageView(backImage);
+	    backImageView.setFitWidth(50); // Set the width of the image
+	    backImageView.setFitHeight(50);
+	    backButton.setGraphic(backImageView);
+	    backButton.setStyle("-fx-background-color: transparent; -fx-text-fill: transparent;");
 	    backButton.setOnAction(e -> PageChanger.changeToMainMenu(stage));
 	    BorderPane.setAlignment(backButton, Pos.TOP_LEFT);
 	    BorderPane.setMargin(backButton, new Insets(10)); // Add spacing for the back button
 
 	    // Title
 	    Text title = new Text("Select Your Map");
-	    title.setFont(Font.font("Arial", 28));
-	    title.setStyle("-fx-fill: white;");
+	    title.setFont(Font.font("Book Antiqua", 34));
+	    title.setStyle("-fx-fill: red;");
 	    VBox titleBox = new VBox(title);
 	    titleBox.setAlignment(Pos.TOP_CENTER);
 	    titleBox.setPadding(new Insets(20, 0, 20, 0)); // Space above and below the title
 
 	    // Map Buttons
-	    HBox mapButtons = new HBox(20); // Horizontal box for map buttons
+	    HBox mapButtons = new HBox(0); // Horizontal box for map buttons
 	    mapButtons.setAlignment(Pos.CENTER); // Center align horizontally
 	    Button map1Button = createMapButton("Map 1", "mapButton1.png", stage, 0);
 	    Button map2Button = createMapButton("Map 2", "mapButton2.png", stage, 1);
@@ -87,12 +92,12 @@ public class PageChanger {
 
     private static Button createMapButton(String mapName, String imagePath, Stage stage, int mapIndex) {
         Button mapButton = new Button(mapName);
-        mapButton.setPrefWidth(100);  // Set width of the button
-        mapButton.setPrefHeight(100);  // Set height of the button
+        mapButton.setPrefWidth(85);  // Set width of the button
+        mapButton.setPrefHeight(85);  // Set height of the button
         // Add image preview
         ImageView mapPreview = new ImageView(new Image(imagePath));
-        mapPreview.setFitWidth(100);
-        mapPreview.setFitHeight(100);
+        mapPreview.setFitWidth(85);
+        mapPreview.setFitHeight(85);
         mapButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         mapButton.setGraphic(mapPreview);
         

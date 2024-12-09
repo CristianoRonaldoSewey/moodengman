@@ -12,8 +12,8 @@ public class PauseScreen {
 
     private final int canvasWidth;
     private final int canvasHeight;
-    private final Font titleFont = Font.font("Arial", FontWeight.BOLD, 36);
-    private final Font textFont = Font.font("Arial", FontWeight.NORMAL, 20);
+    private final Font titleFont = Font.font("Book Antiqua", FontWeight.BOLD, 36);
+    private final Font textFont = Font.font("Book Antiqua", FontWeight.NORMAL, 20);
 
     private final String pauseMessage = "PAUSE";
     private final String resumeMessage = "Press E to Resume";
