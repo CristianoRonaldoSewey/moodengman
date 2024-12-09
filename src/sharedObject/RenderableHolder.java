@@ -33,6 +33,8 @@ public class RenderableHolder {
         
         //loadAnimation();
         loadMenuResource();
+        loadPauseResource();
+           
         //loadSound();
         //loadEndResource();
     }

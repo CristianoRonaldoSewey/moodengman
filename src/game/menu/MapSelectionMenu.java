@@ -18,6 +18,7 @@ public class MapSelectionMenu {
 
     public Scene createContent() {
         StackPane root = new StackPane();
+        //root.setPrefSize(380,400);
         root.setStyle("-fx-background-color: black;");
 
         // Title
@@ -32,7 +33,7 @@ public class MapSelectionMenu {
         // Create buttons for each map
         Button map1Button = createMapButton("Map 1", "/mapButton1.jpg", 0);
         Button map2Button = createMapButton("Map 2", "/mapButton2.png", 1);
-        Button map3Button = createMapButton("Map 3", "/mapButton3.png", 2);
+        Button map3Button = createMapButton("Map 3", "mapButton3-removebg-preview.png", 2);
 
         mapOptions.getChildren().addAll(map1Button, map2Button, map3Button);
 
@@ -41,7 +42,7 @@ public class MapSelectionMenu {
 
         root.getChildren().add(layout);
 
-        return new Scene(root, 800, 600);
+        return new Scene(root, 380,400);
     }
 
     private Button createMapButton(String mapName, String imagePath, int mapIndex) {
@@ -51,8 +52,8 @@ public class MapSelectionMenu {
         
         Image mapPreviewImage = new Image(ClassLoader.getSystemResource(imagePath).toString());
         ImageView mapPreview = new ImageView(mapPreviewImage);
-        mapPreview.setFitWidth(200);
-        mapPreview.setFitHeight(150);
+        mapPreview.setFitWidth(100);
+        mapPreview.setFitHeight(50);
 
         mapButton.setGraphic(mapPreview);
         mapButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");

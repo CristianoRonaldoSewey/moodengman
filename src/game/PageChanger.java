@@ -1,5 +1,7 @@
 package game;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.Scene;
@@ -7,6 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -24,47 +27,57 @@ public class PageChanger {
 	}
 	
 	public static void changeToMapSelection(Stage stage) {
-        // Root pane for the map selection page
-        StackPane root = new StackPane();
-        root.setStyle("-fx-background-color: black;");
+		BorderPane root = new BorderPane();
+	    root.setStyle("-fx-background-color: black;");
 
-        // Title
-        Text title = new Text("Select Your Map");
-        title.setFont(Font.font("Arial", 36));
-        title.setStyle("-fx-fill: white;");
+	    // Back Button
+	    Button backButton = new Button("Back");
+	    backButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
+	    backButton.setOnAction(e -> PageChanger.changeToMainMenu(stage));
+	    BorderPane.setAlignment(backButton, Pos.TOP_LEFT);
+	    BorderPane.setMargin(backButton, new Insets(10)); // Add spacing for the back button
 
-        // Map selection buttons
-        HBox mapButtons = new HBox(20);
-        mapButtons.setStyle("-fx-padding: 50;");
-        mapButtons.setSpacing(20);
+	    // Title
+	    Text title = new Text("Select Your Map");
+	    title.setFont(Font.font("Arial", 28));
+	    title.setStyle("-fx-fill: white;");
+	    VBox titleBox = new VBox(title);
+	    titleBox.setAlignment(Pos.TOP_CENTER);
+	    titleBox.setPadding(new Insets(20, 0, 20, 0)); // Space above and below the title
 
-        // Create buttons for each map
-        Button map1Button = createMapButton("Map 1", "mapButton1.jpg", stage, 0);
-        Button map2Button = createMapButton("Map 2", "mapButton2.png", stage, 1);
-        Button map3Button = createMapButton("Map 3", "mapButton3.png", stage, 2);
+	    // Map Buttons
+	    HBox mapButtons = new HBox(20); // Horizontal box for map buttons
+	    mapButtons.setAlignment(Pos.CENTER); // Center align horizontally
+	    Button map1Button = createMapButton("Map 1", "mapButton1.jpg", stage, 0);
+	    Button map2Button = createMapButton("Map 2", "mapButton2.png", stage, 1);
+	    Button map3Button = createMapButton("Map 3", "map3Button.png", stage, 2);
+	    mapButtons.getChildren().addAll(map1Button, map2Button, map3Button);
 
-        mapButtons.getChildren().addAll(map1Button, map2Button, map3Button);
+	    // Main Layout
+	    VBox mainLayout = new VBox(titleBox, mapButtons);
+	    mainLayout.setAlignment(Pos.TOP_CENTER); // Align everything to the top center
+	    mainLayout.setSpacing(40); // Space between title and buttons
+	    mainLayout.setPadding(new Insets(10, 0, 0, 0)); // Move layout further down if needed
 
-        // Layout
-        VBox layout = new VBox(30, title, mapButtons);
-        layout.setStyle("-fx-alignment: center;");
+	    // Combine Back Button and Main Layout
+	    root.setTop(backButton); // Back button remains at the top-left
+	    root.setCenter(mainLayout); // Center the rest of the layout below
 
-        root.getChildren().add(layout);
-
-        // Set the scene
-        Scene mapSelectionScene = new Scene(root, 800, 600);
-        stage.setTitle("Select Map");
-        stage.setScene(mapSelectionScene);
-        stage.centerOnScreen();
+	    // Set the scene
+	    Scene mapSelectionScene = new Scene(root, 380, 400);
+	    stage.setTitle("Select Map");
+	    stage.setScene(mapSelectionScene);
+	    stage.centerOnScreen();
     }
 
     private static Button createMapButton(String mapName, String imagePath, Stage stage, int mapIndex) {
         Button mapButton = new Button(mapName);
-
+        mapButton.setPrefWidth(75);  // Set width of the button
+        mapButton.setPrefHeight(75);  // Set height of the button
         // Add image preview
         ImageView mapPreview = new ImageView(new Image(imagePath));
-        mapPreview.setFitWidth(200);
-        mapPreview.setFitHeight(150);
+        mapPreview.setFitWidth(75);
+        mapPreview.setFitHeight(75);
 
         mapButton.setGraphic(mapPreview);
         mapButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
@@ -75,30 +88,106 @@ public class PageChanger {
 
         return mapButton;
     }
-	
+    private static short[] getMap1Data() {
+        return new short[]{
+        		19, 18, 18, 18, 18, 18, 18, 18, 18, 26, 26, 26, 18, 18, 22,
+    	        17, 16, 16, 16, 16, 24, 16, 16, 20, 0, 0, 0, 0, 17, 20,
+    	        25, 24, 24, 24, 28, 0, 17, 16, 16, 18, 18, 18, 18, 16, 20,
+    	        0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
+    	        19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
+    	        17, 24, 24, 16, 16, 16, 16, 24, 16, 20, 0,  0,  0,   0, 21,
+    	        21, 0, 0, 17, 16, 16, 20, 0, 17, 20, 0,  0,  0,   0, 21,
+    	        17, 18, 18, 16, 24, 16, 16, 18, 16, 20, 0,  0,  0,   0, 21,
+    	        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
+    	        17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 24, 24, 20,
+    	        21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 20, 0, 0, 21,
+    	        17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 20,  0,  19, 20,
+    	        17, 16, 16, 20, 0,  17, 16, 16, 16, 24, 24, 28,  0, 17, 20,
+    	        17, 16, 16, 20, 0,  17, 16, 16, 20,  0,  0,  0,  0, 17, 20,
+    	        25, 24, 24, 24, 26, 24, 24, 24, 24, 26, 26, 26, 26, 24, 28
+            // Add full map data for Map 1
+        };
+    }
+
+    private static short[] getMap2Data() {
+        return new short[]{
+        		19, 18, 26, 26, 26, 26, 26, 18, 26, 26, 26, 26, 26, 18, 22,
+                17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 20,
+                17, 20,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0, 17, 20,
+                17 ,16, 18, 18, 18, 18,  18, 16, 18, 18, 18, 18, 18, 16, 20,
+                17, 16, 16, 16, 16, 16,  24, 24, 24, 16, 16, 16, 16, 16, 20,
+                17, 16, 16, 16, 16, 20,   0,  0,  0, 17, 16, 16, 16, 16, 20,
+                17, 16, 16, 128, 16, 20,   0, 263,  0, 17, 16, 64, 16, 16, 20,
+                17, 16, 16, 16, 16, 20,   0, 21,  0, 17, 16, 16, 16, 16, 20,
+                17, 16, 16, 16, 16, 20,   0, 21,  0, 17, 16, 16, 16, 16, 20,
+                17, 16, 24, 16, 16, 20,   0, 21,  0, 17, 16, 16, 16, 16, 20,
+                17, 20,  0, 17, 16, 16,  18, 16, 18, 16, 16, 16, 24, 16, 20,
+                17, 20,  0, 17, 16, 16,  16, 16, 16, 16, 16, 20,  0, 17, 20,
+                17, 20,  0, 25, 24, 24,  24, 24, 24, 24, 24, 28,  0, 17, 20,
+                17, 20,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  0, 17, 20,
+                25, 24, 26, 26,  26,26,  26, 42, 26, 26, 26, 26, 26, 24, 28
+            // Add full map data for Map 2
+        };
+    }
+
+    private static short[] getMap3Data() {
+        return new short[]{
+            // Add full map data for Map 3
+        		 19, 26, 26, 26, 26, 26, 26, 18, 26, 26, 26, 26, 26, 26, 22,
+                 21,  0,  0,  0,  0,  0,  0, 21,  0,  0,  0,  0,  0,  0, 21,
+                 17, 18, 22,  0, 35, 18, 18, 16, 18, 18, 22,  0, 259, 18, 20,
+                 17, 16, 20,  0, 17, 16, 16, 16, 16, 16, 20,  0, 17, 16, 20,
+                 17, 16, 20,  0, 17, 16, 16, 24, 16, 16, 20,   0, 17,16, 20,
+                 17, 16, 20,  0, 17, 16, 20,  0, 17, 16, 20,   0, 17, 16, 20,
+                 17, 16, 16, 18, 16, 16, 20,  0, 17, 16, 16, 18, 16, 16, 20,
+                 17, 16, 16, 16, 16, 16, 20,  0, 17, 16, 16, 16, 16, 16, 20,
+                 17, 16, 16, 24, 16, 16, 20,  0, 17, 16, 16, 24, 16, 16, 20,
+                 17, 16, 20,  0, 17, 16, 20,  0, 17, 16, 20,  0, 17, 16,  20,
+                 17, 16, 20,  0, 17, 16, 16, 18, 16, 16, 20,  0, 17, 16,  20,
+                 17, 16, 20,  0, 17, 16, 16, 16, 16, 16, 20,  0, 17, 16,  20,
+                 17, 24, 76,  0, 25, 24, 24, 16, 24, 24, 140,  0, 25, 24,  20,
+                 21, 0,  0,   0,  0,  0,  0, 21,  0,  0,  0,  0,  0,  0,  21,
+                 25, 26, 26, 26, 26, 26, 26, 24, 26, 26, 26, 26, 26, 26, 28
+        };
+    }
 	
 	public static void changeToGame(int mapIndex) {
 		Stage stage = Main.getMainStage(); // Get the Stage from Main
-		Pane root = new Pane();
+	    Pane root = new Pane();
 
-		Scene gameScene = new Scene(root, 380, 400);
-		stage.setTitle("Pacman");
-		stage.setScene(gameScene);
-		stage.centerOnScreen();
-		stage.setOnCloseRequest(event -> {
-			System.out.println("Exit application");
-		});
-		Canvas canvas = new Canvas(380, 400);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+	    Scene gameScene = new Scene(root, 380, 400);
+	    stage.setTitle("Pacman");
+	    stage.setScene(gameScene);
+	    stage.centerOnScreen();
+	    stage.setOnCloseRequest(event -> {
+	        System.out.println("Exit application");
+	    });
 
-		root.getChildren().add(canvas);
-		
+	    Canvas canvas = new Canvas(380, 400);
+	    GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		Model model = new Model();
-		//model.loadMap(mapIndex); // Load the selected map
-		model.startGameLoop(gameScene, gc);
+	    root.getChildren().add(canvas);
 
-		stage.setResizable(false);
+	    Model model = new Model();
+
+	    // Dynamically set the map data based on mapIndex
+	    switch (mapIndex) {
+	        case 0:
+	            model.setLevelData(getMap1Data()); // Use map 1 data
+	            break;
+	        case 1:
+	            model.setLevelData(getMap2Data()); // Use map 2 data
+	            break;
+	        case 2:
+	            model.setLevelData(getMap3Data()); // Use map 3 data
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Invalid map index");
+	    }
+
+	    model.startGameLoop(gameScene, gc);
+
+	    stage.setResizable(false);
 	}
 
 }

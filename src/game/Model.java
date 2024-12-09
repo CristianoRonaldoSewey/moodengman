@@ -1,5 +1,7 @@
 package game;
 
+import static game.Main.getMainStage;
+
 //import java.awt.*;
 
 
@@ -45,7 +47,7 @@ public class Model extends Canvas {
     private final int FRAME_WIDTH = 24;
     private final int FRAME_HEIGHT= 24;
     private final int FRAME_COUNT = 4;
-
+    
     private int N_GHOSTS = 6;
     private int lives, score;
     private int[] dx, dy;
@@ -55,7 +57,8 @@ public class Model extends Canvas {
     private Image up,left,right,down;
     private Image background;
     private Image tree;
-
+    
+    private PauseScreen pauseScreen;
     
 
     private int pacman_x, pacman_y, pacmand_x, pacmand_y;
@@ -72,53 +75,61 @@ public class Model extends Canvas {
     private short[] screenData;
     private boolean gameLoopRunning = false;
 //    private Timer timer;
+    AnimationTimer gameLoop;
+    private boolean isPaused = false; // Track pause state
     public void startGameLoop(Scene scene,GraphicsContext gc) {
     		
-    		loadImages();
-    		initVariables();
-    		setFocusTraversable(true);
-    		initGame();
-    		renderGame(gc);
-    		Thread t=new Thread(new Runnable() {
+    	pauseScreen = new PauseScreen(CANVAS_WIDTH, CANVAS_HEIGHT);
+		loadImages();
+		initVariables();
+		setFocusTraversable(true);
+		initGame();
+		renderGame(gc);
+		Thread t=new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 				@Override
-				public void run() {
+				public void handle(KeyEvent e) {
 					// TODO Auto-generated method stub
-					scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-	
-					@Override
-					public void handle(KeyEvent e) {
-						// TODO Auto-generated method stub
-						handleKeyPressed(e);
-					}
-	    			
-	    		});
+					handleKeyPressed(e);
 				}
     			
-    		}) ;
-    		t.start();
-    			
-    		
-    		
-    		
-    		AnimationTimer timer = new AnimationTimer() {
-    		    @Override
-    		    public void handle(long now) {
-    		    	if (gameOver) {
-    		            showGameOverScreen(gc); // Show game over scene
-    		        } else if (inGame) {
-    		            renderGame(gc); // Render the game
-    		        } else {
-    		            showIntroScreen(gc); // Show intro screen
-    		        }
-    		    }
-    		};
-    		timer.start();
+    		});
+			}
+			
+		}) ;
+		t.start();
+		
+		gameLoop = new AnimationTimer() {
+	        @Override
+	        public void handle(long now) {
+	        	
+	            if (gameOver) {
+	                showGameOverScreen(gc); // Show game over scene
+	            }  // Render the game
+	            else if(isPaused) {
+	            	
+	                pauseScreen.render(gc); // Render pause screen
+	            }
+	             else if (inGame) {
+	                renderGame(gc);} // Render the game
+	            else {
+	                showIntroScreen(gc); // Show intro screen
+	            }
+	        }
+	    };
+
+	    gameLoop.start(); // Start the game loop
     }
     
     public void setGameLoopRunning(boolean status) {
     	this.gameLoopRunning = status;
     }
+
     
     public Image getBackground() {
     	return this.background;
@@ -149,7 +160,7 @@ public class Model extends Canvas {
     public boolean isGAMELOOPRUNNING() {
     	return gameLoopRunning;
     }
-			
+		
     
     public Image setImageByPath(String imagePath) {
         try {
@@ -511,43 +522,95 @@ public class Model extends Canvas {
 
 
     //controls
-   
+    private void stopGameLoop() {
+        if (gameLoop != null) {
+            gameLoop.stop(); // Stop the AnimationTimer
+        }
+        requestFocus();
+    }
+    
+    private void resumeGameLoop() {
+        if (gameLoop != null) {
+            gameLoop.start(); // Resume the AnimationTimer
+        }
+        requestFocus();
+    }
 
     public void handleKeyPressed(KeyEvent event) {
+    	KeyCode key = event.getCode();
 
-            KeyCode key = event.getCode();
-            
-            if (gameOver) {
-                if (key == KeyCode.R) {
-                    gameOver = false;
-                    inGame = true;
-                    initGame(); // Restart the game
-                } else if (key == KeyCode.Q) {
-                    System.exit(0); // Quit the game
-                }
-            
-            } else if (inGame) {
-                if (key == KeyCode.LEFT) {
-                    req_dx = -1;
-                    req_dy = 0;
-                } else if (key == KeyCode.RIGHT) {
-                    req_dx = 1;
-                    req_dy = 0;
-                } else if (key == KeyCode.UP) {
-                    req_dx = 0;
-                    req_dy = -1;
-                } else if (key == KeyCode.DOWN) {
-                    req_dx = 0;
-                    req_dy = 1;
-                } else if (key == KeyCode.ESCAPE && isGAMELOOPRUNNING()) {
-                    inGame = false;
-                } 
-            } else {
-                if (key == KeyCode.SPACE) {
-                    inGame = true;
-                    initGame();
-                }
+        // Handle game over state
+        if (gameOver) {
+            if (key == KeyCode.R) {
+                gameOver = false;
+                inGame = true;
+                initGame(); // Restart the game
+            } else if (key == KeyCode.Q) {
+            	PageChanger.changeToMapSelection(getMainStage());
             }
+            return; // Exit after handling game over state
+        }
+
+        // Handle pause and resume
+        else if (key == KeyCode.E && inGame) {
+            if (isPaused) {
+                resumeGameLoop(); // Resume the game
+                isPaused = false;
+            } else {
+                
+                isPaused = true;
+            }
+            return; // Exit after handling pause/resume
+        }
+
+        if (isPaused) {
+            if (key == KeyCode.E) {
+                resumeGameLoop(); // Resume the game
+                isPaused = false;
+                System.out.println("Game Resumed");
+            } else if (key == KeyCode.R) {
+            	// Stop the current game loop
+                stopGameLoop();
+                // Reinitialize game state
+                inGame = true;
+                isPaused = false;
+                gameOver = false;
+                initGame(); // Reset variables and level
+                // Restart the game loop
+                gameLoop.start();
+                System.out.println("Game Restarted");
+            } else if (key == KeyCode.Q) {
+                PageChanger.changeToMapSelection(getMainStage());
+            }
+            return; // Exit after handling paused state
+        }
+
+        // Handle in-game controls
+        else if (inGame) {
+            
+            if (key == KeyCode.A) {
+              req_dx = -1;
+              req_dy = 0;
+          } else if (key == KeyCode.D) {
+              req_dx = 1;
+              req_dy = 0;
+          } else if (key == KeyCode.W) {
+              req_dx = 0;
+              req_dy = -1;
+          } else if (key == KeyCode.S) {
+              req_dx = 0;
+              req_dy = 1;
+          } else if (key == KeyCode.ESCAPE && isGAMELOOPRUNNING()) {
+              inGame = false;
+          } 
+            }
+        
+
+        // Handle game start from intro screen
+        else if (!inGame && key == KeyCode.SPACE) {
+            inGame = true;
+            initGame();
+        }
         }
     
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,90 +634,15 @@ public class Model extends Canvas {
         gc.fillText(restartText, SCREEN_SIZE / 16, SCREEN_SIZE / 1.5);
         
     }
-    
-    private final short[][] maps = {
-    	    // Map 1
-    	    {19, 18, 18, 18, 18, 18, 18, 18, 18, 26, 26, 26, 18, 18, 22,
-    	        17, 16, 16, 16, 16, 24, 16, 16, 20, 0, 0, 0, 0, 17, 20,
-    	        25, 24, 24, 24, 28, 0, 17, 16, 16, 18, 18, 18, 18, 16, 20,
-    	        0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-    	        19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-    	        17, 24, 24, 16, 16, 16, 16, 24, 16, 20, 0,  0,  0,   0, 21,
-    	        21, 0, 0, 17, 16, 16, 20, 0, 17, 20, 0,  0,  0,   0, 21,
-    	        17, 18, 18, 16, 24, 16, 16, 18, 16, 20, 0,  0,  0,   0, 21,
-    	        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-    	        17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 24, 24, 20,
-    	        21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 20, 0, 0, 21,
-    	        17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 20,  0,  19, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 16, 24, 24, 28,  0, 17, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 20,  0,  0,  0,  0, 17, 20,
-    	        25, 24, 24, 24, 26, 24, 24, 24, 24, 26, 26, 26, 26, 24, 28
-    	    },
-    	    // Map 2
-    	    {19, 18, 18, 18, 18, 18, 18, 18, 18, 26, 26, 26, 18, 18, 22,
-    	        17, 16, 16, 16, 16, 24, 16, 16, 20, 0, 0, 0, 0, 17, 20,
-    	        25, 24, 24, 24, 28, 0, 17, 16, 16, 18, 18, 18, 18, 16, 20,
-    	        0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-    	        19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-    	        17, 24, 24, 16, 16, 16, 16, 24, 16, 20, 0,  0,  0,   0, 21,
-    	        21, 0, 0, 17, 16, 16, 20, 0, 17, 20, 0,  0,  0,   0, 21,
-    	        17, 18, 18, 16, 24, 16, 16, 18, 16, 20, 0,  0,  0,   0, 21,
-    	        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-    	        17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 24, 24, 20,
-    	        21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 20, 0, 0, 21,
-    	        17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 20,  0,  19, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 16, 24, 24, 28,  0, 17, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 20,  0,  0,  0,  0, 17, 20,
-    	        25, 24, 24, 24, 26, 24, 24, 24, 24, 26, 26, 26, 26, 24, 28
-    	     // ... map data
-    	    },
-    	    // Map 3
-    	    {19, 18, 18, 18, 18, 18, 18, 18, 18, 26, 26, 26, 18, 18, 22,
-    	        17, 16, 16, 16, 16, 24, 16, 16, 20, 0, 0, 0, 0, 17, 20,
-    	        25, 24, 24, 24, 28, 0, 17, 16, 16, 18, 18, 18, 18, 16, 20,
-    	        0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-    	        19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-    	        17, 24, 24, 16, 16, 16, 16, 24, 16, 20, 0,  0,  0,   0, 21,
-    	        21, 0, 0, 17, 16, 16, 20, 0, 17, 20, 0,  0,  0,   0, 21,
-    	        17, 18, 18, 16, 24, 16, 16, 18, 16, 20, 0,  0,  0,   0, 21,
-    	        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-    	        17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 24, 24, 20,
-    	        21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 20, 0, 0, 21,
-    	        17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 20,  0,  19, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 16, 24, 24, 28,  0, 17, 20,
-    	        17, 16, 16, 20, 0,  17, 16, 16, 20,  0,  0,  0,  0, 17, 20,
-    	        25, 24, 24, 24, 26, 24, 24, 24, 24, 26, 26, 26, 26, 24, 28
-    	     // ... map data
-    	    }
-    	};
-    
-    private void loadMap(int mapIndex) {
-        if (mapIndex < 0 || mapIndex >= maps.length) {
-            throw new IllegalArgumentException("Invalid map index: " + mapIndex);
-        }
-        levelData = maps[mapIndex]; // Load the selected map's data
-        initLevel(); // Reinitialize the level with the selected map
+    public void setLevelData(short[] levelData) {
+        this.levelData = levelData;
     }
     
-    public Scene startGame(int mapIndex) {
-        // Set up the game layout
-        StackPane root = new StackPane();
-        Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        root.getChildren().add(canvas);
-
-        // Load the selected map
-        loadMap(mapIndex);
-
-        // Create the game scene
-        Scene gameScene = new Scene(root, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gameScene.setOnKeyPressed(this::handleKeyPressed);
-
-        // Start the game loop
-        startGameLoop(gameScene, gc);
-
-        return gameScene;
-    }
+    
+    
+    
+    
+    
     
     
     
