@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	public static Stage mainStage;
 	public void start(Stage primaryStage) {
+		
 //		Scene mapSelectionScene = new MapSelectionMenu().createContent();
 //		
 //		Scene mainScene = new Scene(new logic.MainMenu().createContent());

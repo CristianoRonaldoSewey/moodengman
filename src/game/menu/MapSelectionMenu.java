@@ -42,7 +42,7 @@ public class MapSelectionMenu {
 
         root.getChildren().add(layout);
 
-        return new Scene(root, 380,400);
+        return new Scene(root, 360,400);
     }
 
     private Button createMapButton(String mapName, String imagePath, int mapIndex) {

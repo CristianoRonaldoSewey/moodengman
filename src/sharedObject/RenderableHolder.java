@@ -21,7 +21,7 @@ public class RenderableHolder {
     private List<IRenderable> entities;
     private Comparator<IRenderable> comparator;
 
-    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3,pauseMenu;
+    public static Image mainmenuBackground,croppedMenuBackground,playButton,playButtonHover,mapButton1,mapButton2,mapButton3,pauseMenu,mapselectionMenu;
 
     public static Image[] state;
 
@@ -34,6 +34,7 @@ public class RenderableHolder {
         //loadAnimation();
         loadMenuResource();
         loadPauseResource();
+        loadMapselectionResource();
            
         //loadSound();
         //loadEndResource();
@@ -58,7 +59,7 @@ public class RenderableHolder {
         playButton = new Image(ClassLoader.getSystemResource("playButton.png").toString());
         playButtonHover = new Image(ClassLoader.getSystemResource("playButtonHover.png").toString());
         mainmenuBackground = new Image(ClassLoader.getSystemResource("mainmenuBackground.png").toString());
-        croppedMenuBackground = new WritableImage(mainmenuBackground.getPixelReader(),0,0,380,400);
+        croppedMenuBackground = new WritableImage(mainmenuBackground.getPixelReader(),0,0,360,400);
     }
     public static void loadMapResource(){
         mapButton1 = new Image(ClassLoader.getSystemResource("mapButton1.png").toString());
@@ -67,6 +68,10 @@ public class RenderableHolder {
     }
     public static void loadPauseResource(){
         pauseMenu = new Image(ClassLoader.getSystemResource("game-background.jpg").toString());
+        
+    }
+    public static void loadMapselectionResource(){
+    	mapselectionMenu = new Image(ClassLoader.getSystemResource("mapselectMenu.png").toString());
         
     }
 

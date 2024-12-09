@@ -2,6 +2,8 @@ package game;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.Scene;
@@ -9,6 +11,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -18,17 +23,24 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.MainMenu;
+import sharedObject.RenderableHolder;
 
 public class PageChanger {
 	
 	public static void changeToMainMenu(Stage stage) {
 		MainMenu m = new MainMenu();
+		// Set custom cursor
+	    
 		stage.setScene(new Scene(m.createContent()));
 	}
 	
 	public static void changeToMapSelection(Stage stage) {
 		BorderPane root = new BorderPane();
-	    root.setStyle("-fx-background-color: black;");
+		// Set background image
+	    Image backgroundImage = RenderableHolder.mapselectionMenu;
+	    BackgroundImage bgImage = new BackgroundImage(backgroundImage, null, null, null, null);
+	    root.setPrefSize(360, 400);
+	    root.setBackground(new Background(bgImage));
 
 	    // Back Button
 	    Button backButton = new Button("Back");
@@ -48,15 +60,15 @@ public class PageChanger {
 	    // Map Buttons
 	    HBox mapButtons = new HBox(20); // Horizontal box for map buttons
 	    mapButtons.setAlignment(Pos.CENTER); // Center align horizontally
-	    Button map1Button = createMapButton("Map 1", "mapButton1.jpg", stage, 0);
+	    Button map1Button = createMapButton("Map 1", "mapButton1.png", stage, 0);
 	    Button map2Button = createMapButton("Map 2", "mapButton2.png", stage, 1);
-	    Button map3Button = createMapButton("Map 3", "map3Button.png", stage, 2);
+	    Button map3Button = createMapButton("Map 3", "mapButton3.png", stage, 2);
 	    mapButtons.getChildren().addAll(map1Button, map2Button, map3Button);
 
 	    // Main Layout
 	    VBox mainLayout = new VBox(titleBox, mapButtons);
 	    mainLayout.setAlignment(Pos.TOP_CENTER); // Align everything to the top center
-	    mainLayout.setSpacing(40); // Space between title and buttons
+	    mainLayout.setSpacing(30); // Space between title and buttons
 	    mainLayout.setPadding(new Insets(10, 0, 0, 0)); // Move layout further down if needed
 
 	    // Combine Back Button and Main Layout
@@ -64,7 +76,10 @@ public class PageChanger {
 	    root.setCenter(mainLayout); // Center the rest of the layout below
 
 	    // Set the scene
-	    Scene mapSelectionScene = new Scene(root, 380, 400);
+	    Scene mapSelectionScene = new Scene(root, 360, 400);
+	 // Set custom cursor
+	    Cursor customCursor = new ImageCursor(new Image("/pointer.png"));
+	    mapSelectionScene.setCursor(customCursor);
 	    stage.setTitle("Select Map");
 	    stage.setScene(mapSelectionScene);
 	    stage.centerOnScreen();
@@ -72,15 +87,15 @@ public class PageChanger {
 
     private static Button createMapButton(String mapName, String imagePath, Stage stage, int mapIndex) {
         Button mapButton = new Button(mapName);
-        mapButton.setPrefWidth(75);  // Set width of the button
-        mapButton.setPrefHeight(75);  // Set height of the button
+        mapButton.setPrefWidth(100);  // Set width of the button
+        mapButton.setPrefHeight(100);  // Set height of the button
         // Add image preview
         ImageView mapPreview = new ImageView(new Image(imagePath));
-        mapPreview.setFitWidth(75);
-        mapPreview.setFitHeight(75);
-
+        mapPreview.setFitWidth(100);
+        mapPreview.setFitHeight(100);
+        mapButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         mapButton.setGraphic(mapPreview);
-        mapButton.setStyle("-fx-background-color: #444; -fx-text-fill: white;");
+        
         mapButton.setOnAction(e -> {
             System.out.println(mapName + " selected!");
             changeToGame(mapIndex); // Transition to game page with the selected map index
@@ -155,7 +170,10 @@ public class PageChanger {
 		Stage stage = Main.getMainStage(); // Get the Stage from Main
 	    Pane root = new Pane();
 
-	    Scene gameScene = new Scene(root, 380, 400);
+	    Scene gameScene = new Scene(root, 360, 400);
+	 // Set custom cursor
+	    Cursor customCursor = new ImageCursor(new Image("/pointer.png"));
+	    gameScene.setCursor(customCursor);
 	    stage.setTitle("Pacman");
 	    stage.setScene(gameScene);
 	    stage.centerOnScreen();
@@ -163,7 +181,7 @@ public class PageChanger {
 	        System.out.println("Exit application");
 	    });
 
-	    Canvas canvas = new Canvas(380, 400);
+	    Canvas canvas = new Canvas(360, 400);
 	    GraphicsContext gc = canvas.getGraphicsContext2D();
 
 	    root.getChildren().add(canvas);

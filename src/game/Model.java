@@ -37,7 +37,7 @@ public class Model extends Canvas {
     private boolean dying = false;
     private boolean gameOver = false;
     
-    private final int CANVAS_WIDTH = 380;
+    private final int CANVAS_WIDTH = 360;
     private final int CANVAS_HEIGHT = 400;
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 15;
@@ -580,7 +580,8 @@ public class Model extends Canvas {
                 gameLoop.start();
                 System.out.println("Game Restarted");
             } else if (key == KeyCode.Q) {
-                PageChanger.changeToMapSelection(getMainStage());
+            	this.gameOver = true;
+//                PageChanger.changeToMapSelection(getMainStage());
             }
             return; // Exit after handling paused state
         }
